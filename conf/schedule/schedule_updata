@@ -1,0 +1,48 @@
+#!/bin/sh
+deleteFile() {
+  local filePath=$1
+  if [ -f "$filePath" ]; then
+   rm "$filePath"
+  fi
+}
+# get chinadns ignore list
+updateChnroute() {
+  deleteFile /tmp/chnroute.txt
+  curl 'http://ftp.apnic.net/apnic/stats/apnic/delegated-apnic-latest' | grep ipv4 | grep CN | awk -F\| '{ printf("%s/%d\n", $4, 32-log($5)/log(2)) }' >  /tmp/chnroute.txt
+  if test -s /tmp/chnroute.txt;then
+  mv -f /tmp/chnroute.txt /etc/chinadns/
+  else
+  cp -f /var/schedule/chnroute.txt /etc/chinadns/
+  fi
+  chmod 644 /etc/chinadns/chnroute.txt
+  if pidof chinadns>/dev/null; then
+      /etc/init.d/chinadns restart
+  fi
+ 
+}
+updateDnsmasqConf() {
+  deleteFile /tmp/accelerated-domains.china.conf
+  # download accelerated-domains.china.conf
+  local DNS=223.5.5.5
+  curl 'https://raw.githubusercontent.com/felixonmars/dnsmasq-china-list/master/accelerated-domains.china.conf' > /tmp/accelerated-domains.china.conf
+  sed -i "s|^\(server.*\)/[^/]*$|\1/$DNS|"  /tmp/accelerated-domains.china.conf
+  if test -s /tmp/accelerated-domains.china.conf;then
+  mv -f /tmp/accelerated-domains.china.conf /etc/dnsmasq.d/
+  else
+  cp -f /var/schedule/accelerated-domains.china.conf /etc/dnsmasq.d
+  fi
+  chmod 644 /etc/dnsmasq.d/accelerated-domains.china.conf
+  # download foreign_list.conf
+  python /var/schedule/gfwlist2dnsmasq_noipset.py
+  if test -s /etc/dnsmasq.d/foreign_list.conf;then
+  echo "Update foreign_list.conf Success"
+  else
+  cp -f /var/schedule/foreign_list.conf /etc/dnsmasq.d/
+  fi
+  if pidof dnsmasq>/dev/null; then
+      /etc/init.d/dnsmasq restart
+  fi
+
+}
+updateChnroute
+updateDnsmasqConf
