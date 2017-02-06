@@ -1,0 +1,39 @@
+# Enable C++ support
+language: cpp
+# Compiler selection
+compiler:
+  - g++
+  - clang
+
+os:
+    - linux
+
+sudo: false
+git:
+  submodules: false
+branches:
+  only:
+  - hexo
+cache:
+  directories:
+  - node_modules
+before_install:
+- openssl aes-256-cbc -K $encrypted_b60764d3cdc1_key -iv $encrypted_b60764d3cdc1_iv -in .travis/travis.enc -out ~/.ssh/id_rsa -d
+- chmod 600 ~/.ssh/id_rsa
+- eval $(ssh-agent)
+- ssh-add ~/.ssh/id_rsa
+- cp .travis/ssh_config ~/.ssh/config
+- git config --global user.name 'Xudong Zheng'
+- git config --global user.email 'xudongzheng1225@gmail.com'
+- sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+- git submodule update --init --recursive
+- git clone -b master git@github.com:allenn/allenn.github.io.git .deploy_git
+- cp -r .deploy_git public
+- rm -rf ./public/.git
+- export TZ='Asia/Shanghai'
+install:
+- npm install hexo-cli -g
+- npm install
+script:
+- hexo g
+- hexo d
