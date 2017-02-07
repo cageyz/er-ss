@@ -22,7 +22,7 @@ CONF=/etc/chinadns/chnroute.txt
 PID_DIR=/var/run
 PID_FILE=$PID_DIR/chinadns.pid
 RET_VAL=0
-DNSIP=114.114.114.114,127.0.0.1:5300
+DNSIP=223.5.5.5,127.0.0.1:5300
 PID=0
 
 [ -x $DAEMON ] || exit 0
