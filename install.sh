@@ -50,6 +50,7 @@ until
 			done
 
 echo "start to configure router dns setting"
+
 if [ $select -eq 1 ];then
 $run_cfg begin
 $run_cfg set interfaces ethernet eth0 pppoe 0 name-server none
@@ -83,26 +84,30 @@ $run_cfg end
 fi
 echo "end to configure router dns setting"
 
-
+BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 echo "Please input service for shadowsocks-libev"
 read -p "(Default service: 127.0.0.1):" shadowsocksservice
 [ -z "${shadowsocksservice}" ] && shadowsocksservice="127.0.0.1"
-sed -i "s/shadowsocksservice/${shadowsocksservice}/" ./tools/shadowsocks-libev/conf/config.json
-sed -i "s/shadowsocksservice/${shadowsocksservice}/" ./conf/post-config.d/cupdate_iptables
+sed -i "s/shadowsocksservice/${shadowsocksservice}/" ${BASEDIR}/tools/shadowsocks-libev/conf/config.json
+sed -i "s/shadowsocksservice/${shadowsocksservice}/" ${BASEDIR}/conf/post-config.d/cupdate_iptables
 
 echo "Please input port for shadowsocks-libev"
 read -p "(Default port: 32000):" shadowsocksport
 [ -z "${shadowsocksport}" ] && shadowsocksport="32000"
-sed -i "s/shadowsocksport/${shadowsocksport}/" ./tools/shadowsocks-libev/conf/config.json
-sed -i "s/shadowsocksport/${shadowsocksport}/" ./conf/post-config.d/cupdate_iptables
+sed -i "s/shadowsocksport/${shadowsocksport}/" ${BASEDIR}/tools/shadowsocks-libev/conf/config.json
+sed -i "s/shadowsocksport/${shadowsocksport}/" ${BASEDIR}/conf/post-config.d/cupdate_iptables
 
 echo "Please input password for shadowsocks-libev"
 read -p "(Default password: 123456):" shadowsockspwd
 [ -z "${shadowsockspwd}" ] && shadowsockspwd="123456"
-sed -i "s/shadowsockspwd/${shadowsockspwd}/" ./tools/shadowsocks-libev/conf/config.json
+sed -i "s/shadowsockspwd/${shadowsockspwd}/" ${BASEDIR}/tools/shadowsocks-libev/conf/config.json
 
 echo "Please input method for shadowsocks-libev"
 read -p "(Default method: rc4-md5):" shadowsocksmethod
 [ -z "${shadowsocksmethod}" ] && shadowsocksmethod="rc4-md5"
-sed -i "s/shadowsocksmethod/${shadowsocksmethod}/" ./tools/shadowsocks-libev/conf/config.json
+sed -i "s/shadowsocksmethod/${shadowsocksmethod}/" ${BASEDIR}/tools/shadowsocks-libev/conf/config.json
+
+. ${BASEDIR}/chinadns/install.sh
+. ${BASEDIR}/dnsmasq/install.sh
+. ${BASEDIR}/shadowsocks-libev/install.sh
