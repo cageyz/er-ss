@@ -108,6 +108,9 @@ read -p "(Default method: rc4-md5):" shadowsocksmethod
 [ -z "${shadowsocksmethod}" ] && shadowsocksmethod="rc4-md5"
 sed -i "s/shadowsocksmethod/${shadowsocksmethod}/" ${BASEDIR}/tools/shadowsocks-libev/conf/config.json
 
+cp -f ${BASEDIR}/conf/post-config.d/update_iptables /config/scripts/post-config.d
+cp -r -f ${BASEDIR}/conf/schedule /config/scripts/
+
 . ${BASEDIR}/chinadns/install.sh
 . ${BASEDIR}/dnsmasq/install.sh
 . ${BASEDIR}/shadowsocks-libev/install.sh

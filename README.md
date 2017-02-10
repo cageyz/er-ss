@@ -7,4 +7,13 @@
 
 ## 安装方法
 
-TODO 
+将安装包上传到路由器上，将安装包解压缩，运行下面命令
+
+```
+sudo -i
+
+chmod 755 erl-ss
+cd erl-ss
+./install.sh
+
+```
