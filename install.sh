@@ -86,8 +86,8 @@ echo "end to configure router dns setting"
 
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-echo "Please input service for shadowsocks-libev"
-read -p "(Default service: 127.0.0.1):" shadowsocksservice
+echo "Please input server for shadowsocks-libev"
+read -p "(Default server: 127.0.0.1):" shadowsocksservice
 [ -z "${shadowsocksservice}" ] && shadowsocksservice="127.0.0.1"
 sed -i "s/shadowsocksservice/${shadowsocksservice}/" ${BASEDIR}/tools/shadowsocks-libev/conf/config.json
 sed -i "s/shadowsocksservice/${shadowsocksservice}/" ${BASEDIR}/conf/post-config.d/cupdate_iptables
